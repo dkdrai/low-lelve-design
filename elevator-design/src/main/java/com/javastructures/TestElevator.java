@@ -1,0 +1,50 @@
+package com.javastructures;
+
+import com.javastructures.enums.Direction;
+import com.javastructures.requests.ExternalRequest;
+import com.javastructures.requests.InternalRequest;
+import com.javastructures.requests.Request;
+import com.javastructures.workers.AddJobWorker;
+import com.javastructures.workers.ProcessJobWorker;
+
+public class TestElevator {
+
+    public static void main(String args[]) {
+
+        Elevator elevator = new Elevator();
+
+        /**
+         * Thread for starting the elevator
+         */
+        ProcessJobWorker processJobWorker = new ProcessJobWorker(elevator);
+        Thread t2 = new Thread(processJobWorker);
+        t2.start();
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        InternalRequest ir = new InternalRequest(5);
+
+        ExternalRequest er = new ExternalRequest(Direction.UP, 0);
+
+        Request request1 = new Request(ir, er);
+
+        /**
+         * Pass job to the elevator
+         */
+        new Thread(new AddJobWorker(elevator, request1)).start();
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
+}
